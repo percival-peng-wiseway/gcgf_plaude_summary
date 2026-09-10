@@ -1,6 +1,6 @@
 # GCGF Meeting Reports · 会议记录报告
 
-Bilingual reports from the Australian Clean Energy Summit: 11 reports, 41 Highlights and 28 original photographs.
+Bilingual clean energy conference and project meeting reports: 12 reports, 41 Highlights and 28 original photographs.
 
 - English is the default. `?lang=zh` opens Chinese directly; `?lang=en` opens English.
 - Each report offers a brief, the full Summary and Highlights with original images.
@@ -58,3 +58,5 @@ Deploying is an explicit action. Development and builds do not publish. The stan
 `lib/data/briefings.json` contains all content needed to run and build the site. Original photos are in `public/library`, and the supplied logo is in `public/media/logo.png`. Source wording, names and numerical claims are retained; translation checks do not independently verify the underlying conference claims.
 
 The optional importer `node scripts/import-library.mjs` reads the adjacent `../Plaud_Library` archive, including its manifest, four Markdown versions and translation records. This external archive is not required for a normal clone/build/deploy. The importer keeps bold Chinese labels compatible with Markdown and excludes AI Suggestions and mind maps. After importing, run the checks above and commit the updated data and photos.
+
+The Mount Mueller project meeting has both source Summary tabs archived with their full Chinese translation and bilingual briefs in `content/12_mount-mueller-bess/`. The source provides no Highlights or conference photographs.

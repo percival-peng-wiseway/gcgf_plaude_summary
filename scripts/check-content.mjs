@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 const reports=JSON.parse(fs.readFileSync('lib/data/briefings.json','utf8'));
-assert.equal(reports.length,11);
+assert.equal(reports.length,12);
 assert.equal(new Set(reports.map(r=>r.slug)).size,reports.length);
 let highlights=0;
 for(const report of reports){
@@ -26,4 +26,4 @@ for(const report of reports){
  });
 }
 assert.equal(highlights,41);
-console.log('PASS: 11 bilingual reports, 41 paired Highlights, local images, formatting and removed sections.');
+console.log('PASS: 12 bilingual reports, 41 paired Highlights, local images, formatting and removed sections.');
