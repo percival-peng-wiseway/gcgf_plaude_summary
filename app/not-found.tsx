@@ -1,0 +1,1 @@
+export default function NotFound(){return <main className="shell"><section className="reading-paper"><div className="paper-label">GCGF · 404</div><h1>未找到这份简报 / Briefing not found</h1><p><a href="/">← 返回全部简报 / All briefings</a></p></section></main>}
