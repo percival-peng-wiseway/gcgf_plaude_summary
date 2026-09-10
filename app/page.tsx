@@ -1,11 +1,6 @@
-'use client';
-import { useState,useEffect } from 'react';
-import { Sparkles, ArrowRight } from 'lucide-react';
-import briefings from '@/lib/data/briefings.json';
-export default function Home(){
- const [lang,setLang]=useState<'zh'|'en'>('zh');
- useEffect(()=>{if(new URLSearchParams(window.location.search).get('lang')==='en')setLang('en')},[]);
- function changeLanguage(v:'zh'|'en'){setLang(v);const u=new URL(window.location.href);u.searchParams.set('lang',v);window.history.replaceState(null,'',u);}
- return <main className="shell" lang={lang==='zh'?'zh-CN':'en'}><nav className="brandbar"><div className="logo-crop"><img src="/media/logo.png" alt="GCGF — Green Connect Green Future"/></div><span className="brand-caption">GREEN CONNECT<br/>GREEN FUTURE</span><div className="language" aria-label="Language"><button aria-pressed={lang==='zh'} onClick={()=>changeLanguage('zh')}>中文</button><button aria-pressed={lang==='en'} onClick={()=>changeLanguage('en')}>EN</button></div></nav><header className="report-intro"><div><div className="report-kicker">GCGF / KNOWLEDGE LIBRARY</div><h1>{lang==='zh'?'会议记录报告':'Meeting Reports'}<span className="title-dot">.</span></h1><p>{lang==='zh'?'记录对话，读懂能源转型。':'Conversations shaping the energy transition.'}</p></div><div className="collection-count"><strong>11</strong><span>{lang==='zh'?'份会议报告':'meeting reports'}</span></div></header>
- <div className="section-title"><h2>{lang==='zh'?'全部会议':'All meetings'}</h2><span>{lang==='zh'?'精选观点 · 完整记录':'KEY INSIGHTS · FULL RECORDS'}</span></div><div className="cards">{briefings.map(b=>{const c=b.content[lang];return <a className="brief-card" key={b.id} href={`/briefing/${b.slug}?lang=${lang}`}><div className="card-top"><span className="tag">{lang==='zh'?({'Community':'社区共建','Climate security':'气候安全','Data centers':'数据中心','Investment':'能源投资','Environment':'环境审批','Storage':'储能与电网','State policy':'州级政策','Market design':'市场机制','Climate risk':'气候韧性'} as Record<string,string>)[b.tags[0]]||b.tags[0]:b.tags[0]}</span><span className="report-number">{String(b.id).padStart(2,'0')}</span></div><h3>{c.title}</h3><div className="card-highlights"><div className="eyebrow"><Sparkles size={14}/>{c.highlights.length?'HIGHLIGHTS':lang==='zh'?'内容摘要':'OVERVIEW'}</div>{c.highlights.length?<ul>{c.highlights.slice(0,2).map(h=><li key={h.time}>{h.title}</li>)}</ul>:<p>{c.brief.split('\n')[0]}</p>}</div><div className="card-bottom"><span>{lang==='zh'?'阅读报告':'Read report'}{c.highlights.length>0&&<small> · {c.highlights.length} Highlights</small>}</span><ArrowRight size={17}/></div></a>})}</div><footer>GCGF <span>GREEN CONNECT · GREEN FUTURE</span><small>{lang==='zh'?'会议记录报告':'Meeting Reports'}</small></footer></main>
-}
+import type { Metadata } from 'next';
+import Home from '@/components/home';
+import { resolveLanguage } from '@/lib/language';
+type Props={searchParams:Promise<{lang?:string|string[]}>};
+export async function generateMetadata({searchParams}:Props):Promise<Metadata>{const lang=resolveLanguage((await searchParams).lang);return {title:lang==='zh'?'会议记录报告 | GCGF':'Meeting Reports | GCGF',description:lang==='zh'?'澳大利亚清洁能源峰会会议报告、摘要和 Highlights。':'Meeting reports, summaries and highlights from the Australian Clean Energy Summit.'}}
+export default async function Page({searchParams}:Props){return <Home initialLanguage={resolveLanguage((await searchParams).lang)}/>}

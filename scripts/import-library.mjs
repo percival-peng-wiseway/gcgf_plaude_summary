@@ -9,6 +9,11 @@ const escape=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>',
 marked.use({renderer:{html({text}){return /^<\/?mark>$/.test(text.trim())?text:escape(text)}}});
 // Separate punctuation-ending bold labels from adjacent prose for CommonMark.
 const renderMarkdown=md=>marked.parse(md.replace(/(\*\*[^*\n]+[：:]\*\*)(?=\S)/g,'$1 '));
+// Source AI Suggestions are trailing editorial sections, not meeting content.
+const withoutAISuggestions=md=>{
+ const heading=/^[ \t]*(?:>[ \t]*)?(?:#{1,6}[ \t]+)?(?:\*\*)?AI[ \t]*(?:Suggestions|建议)(?:\*\*)?[ \t]*$/im.exec(md);
+ return heading?md.slice(0,heading.index).trimEnd():md;
+};
 const result=manifest.map((m,i)=>{
  const base=path.join(root,m.folder),dest=path.join('public/library',m.folder);fs.mkdirSync(dest,{recursive:true});fs.cpSync(path.join(base,'assets'),path.join(dest,'assets'),{recursive:true,filter:src=>path.basename(src)!=='mind-map.svg'});
  fs.rmSync(path.join(dest,'assets/mind-map.svg'),{force:true});
@@ -20,7 +25,7 @@ const result=manifest.map((m,i)=>{
   const end=lang==='en'?'## Highlights\n':'## Highlights｜亮点完整翻译\n';
   const source=md.split(start)[1].split(end)[0].replace(/\n### (?:Mind map|思维导图)\s*\n[\s\S]*$/, '').replaceAll('](assets/',`](/library/${m.folder}/assets/`);
   const highlights=m.highlights.map((h,j)=>{const v={...h,...(lang==='zh'?translations[String(m.index)][j]:{})};return {...v,image:h.image?`/library/${m.folder}/${h.image}`:null,html:renderMarkdown(v.body.replaceAll('• ','- '))}});
-  content[lang]={title:lang==='zh'?digests[i].title:m.title.split(': ').slice(1).join(': '),brief:digests[i][lang],briefHtml:renderMarkdown(digests[i][lang]),summaryHtml:renderMarkdown(source),highlights};
+  content[lang]={title:lang==='zh'?digests[i].title:m.title.split(': ').slice(1).join(': '),brief:digests[i][lang],briefHtml:renderMarkdown(digests[i][lang]),summaryHtml:renderMarkdown(withoutAISuggestions(source)),highlights};
  }
  return {id:m.index,slug:m.folder,date:m.date,duration:m.duration,source:m.source_url,tags:m.tags.slice(2),photoCount:m.photo_count,content};
 });

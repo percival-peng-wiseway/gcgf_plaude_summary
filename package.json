@@ -1,5 +1,5 @@
 {
-  "name": "sites-project",
+  "name": "gcgf-meeting-reports",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -10,7 +10,10 @@
     "build": "vinext build",
     "start": "wrangler dev --config dist/server/wrangler.json",
     "lint": "oxlint",
-    "format": "oxfmt"
+    "format": "oxfmt",
+    "deploy": "wrangler deploy --config dist/server/wrangler.json",
+    "check": "tsc --noEmit",
+    "check:content": "node scripts/check-content.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
