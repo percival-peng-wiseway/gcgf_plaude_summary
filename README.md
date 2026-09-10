@@ -24,9 +24,37 @@ npm run check:content
 npm run build
 ```
 
+## AWS Amplify Hosting
+
+The repository's `amplify.yml` builds a static export with `npm run build:amplify`
+and publishes **`dist/client`**. It generates the homepage, all 11 report pages,
+and a 404 page. The build fails if required pages or assets are missing.
+
+Do not publish `dist` or use the default Worker build as a static artifact: that
+build contains a server program and has no root `index.html`, causing an S3 404.
+No catch-all rewrite to `/index.html` is required; reports have their own HTML
+files at `briefing/<slug>.html`, resolved by Amplify's built-in clean URLs.
+In Amplify's **Rewrites and redirects**, use `amplify-redirects.json` to replace
+the old 404 fallback to `/index.html` with the generated `/404.html` page.
+This JSON is console configuration; `amplify.yml` does not apply it automatically.
+
+[AWS clean URL and 404 routing reference](https://docs.aws.amazon.com/amplify/latest/userguide/redirect-rewrite-examples.html)
+
+Static HTML defaults to English. On page load, the browser applies `?lang=zh`
+or `?lang=en`, updates the document language/title, and preserves the language in
+report links. Switching languages does not require a server request.
+
+```sh
+npm run build:amplify
+```
+
+Only public assets in `dist/client` are deployed; server build intermediates
+remain outside the published directory. The existing Amplify domain and branch
+connection can remain unchanged.
+
 ## Cloudflare Workers
 
-This project uses Vinext and the Cloudflare Vite plugin. Deploy it as a **Worker**, with the server and static assets together. It is not a Pages static export.
+The default `npm run build` still uses Vinext and the Cloudflare Vite plugin to build a **Worker**, with the server and static assets together. Use `build:amplify` for the separate static export.
 
 Connect this GitHub repository in Cloudflare Workers & Pages → Create → Import a repository. Use:
 
@@ -38,7 +66,7 @@ Connect this GitHub repository in Cloudflare Workers & Pages → Create → Impo
 | Worker name | `gcgf-meeting-reports` |
 | Node version | 22.13+ |
 
-The build generates `dist/server/wrangler.json`; the deploy script explicitly uses that configuration, including the `dist/client` assets. The input is `wrangler.jsonc`. No account ID, secret or site-provider credential is committed. The legacy `.openai/hosting.json` records the earlier Sites project but is not used by this Cloudflare configuration.
+The build generates `dist/server/wrangler.json`; the deploy script explicitly uses that configuration, including the `dist/client` assets. The input is `wrangler.worker.jsonc`, named explicitly so static builds do not auto-detect a Worker deployment. No account ID, secret or site-provider credential is committed. The legacy `.openai/hosting.json` records the earlier Sites project but is not used by the AWS or Cloudflare configuration.
 
 For a manual deployment, after authenticating with your own Cloudflare account:
 

@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import briefings from '@/lib/data/briefings.json';
 type Briefing=(typeof briefings)[number];
 export default function Reader({briefing:b,initialLanguage}:{briefing:Briefing;initialLanguage:Language}){
- const [lang,changeLanguage]=useLanguage(initialLanguage);
+ const [lang,changeLanguage]=useLanguage(initialLanguage,{en:b.content.en.title,zh:b.content.zh.title});
  const c=b.content[lang],zh=lang==='zh';
  return <main className="shell reader-shell" lang={zh?'zh-CN':'en'}>
  <nav className="reader-nav"><a href={`/?lang=${lang}`}><ArrowLeft size={17}/>{zh?'全部报告':'All reports'}</a><div className="language" aria-label={zh?'阅读语言':'Reading language'}><button aria-pressed={zh} onClick={()=>changeLanguage('zh')}>中文</button><button aria-pressed={!zh} onClick={()=>changeLanguage('en')}>EN</button></div></nav>
