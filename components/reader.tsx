@@ -1,7 +1,7 @@
 'use client';
 import { useLanguage } from '@/hooks/use-language';
 import type { Language } from '@/lib/language';
-import { ArrowLeft, ArrowUpRight, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { ArrowLeft, Image as ImageIcon, Sparkles } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import briefings from '@/lib/data/briefings.json';
 type Briefing=(typeof briefings)[number];
@@ -10,7 +10,7 @@ export default function Reader({briefing:b,initialLanguage}:{briefing:Briefing;i
  const c=b.content[lang],zh=lang==='zh';
  return <main className="shell reader-shell" lang={zh?'zh-CN':'en'}>
  <nav className="reader-nav"><a href={`/?lang=${lang}`}><ArrowLeft size={17}/>{zh?'全部报告':'All reports'}</a><div className="language" aria-label={zh?'阅读语言':'Reading language'}><button aria-pressed={zh} onClick={()=>changeLanguage('zh')}>中文</button><button aria-pressed={!zh} onClick={()=>changeLanguage('en')}>EN</button></div></nav>
- <header className="detail-header"><div className="detail-brand"><div className="logo-crop"><img src="/media/logo.png" alt="GCGF — Green Connect Green Future"/></div><span>REPORT {String(b.id).padStart(2,'0')} / 11</span></div><div className="detail-kicker">GCGF / MEETING REPORTS</div><h1>{c.title}</h1><div className="detail-meta"><span><Sparkles size={15}/>{c.highlights.length} {c.highlights.length===1?'Highlight':'Highlights'}</span><a href={b.source} target="_blank" rel="noreferrer">{zh?'原始来源':'Original source'}<ArrowUpRight size={15}/></a></div></header>
+ <header className="detail-header"><div className="detail-brand"><div className="logo-crop"><img src="/media/logo.png" alt="GCGF — Green Connect Green Future"/></div><span>REPORT {String(b.id).padStart(2,'0')} / 11</span></div><div className="detail-kicker">GCGF / MEETING REPORTS</div><h1>{c.title}</h1><div className="detail-meta"><span><Sparkles size={15}/>{c.highlights.length} {c.highlights.length===1?'Highlight':'Highlights'}</span></div></header>
  <Tabs defaultValue="brief" className="reading-tabs"><TabsList className="reading-tab-list" aria-label={zh?'内容版本':'Content view'}><TabsTrigger className="reading-tab" value="brief">{zh?'精简摘要':'Brief'}</TabsTrigger><TabsTrigger className="reading-tab" value="full">{zh?'完整 Summary':'Full summary'}</TabsTrigger><TabsTrigger className="reading-tab" value="highlights">Highlights <span>{c.highlights.length}</span></TabsTrigger></TabsList>
  <TabsContent value="brief"><section className="reading-paper"><div className="paper-label">{zh?'摘要速览':'AT A GLANCE'}</div><div className="prose-content" dangerouslySetInnerHTML={{__html:c.briefHtml}}/><p className="source-note">{zh?'根据原页面 Summary 整理。嘉宾观点及提案按来源呈现。':'Condensed from the source Summary. Speaker views and proposals are presented as recorded.'}</p></section></TabsContent>
  <TabsContent value="full"><section className="reading-paper"><div className="paper-label">{zh?'SUMMARY · 完整中文翻译':'SUMMARY · ORIGINAL TEXT'}</div><div className="prose-content" dangerouslySetInnerHTML={{__html:c.summaryHtml}}/></section></TabsContent>
